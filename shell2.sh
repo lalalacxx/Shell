@@ -151,6 +151,24 @@
 # shell这里的{}中包含的语句会在当前shell进程中执行
 # 而()中包含的语句会创建新的shell进程执行
 
+# case命令 类比c的switch/case语句 esac表示语句块的结束
+# c中的switch/case只能匹配整型或字符型常量表达式
+# 而shell中的case可以匹配字符串和Wildcard
+# 每个匹配分支可以有若干条命令，末尾必须以;;（两个分号）结束
+# 执行时找到第一个匹配的分支并执行相应的命令
+# 然后直接跳到esac之后，不用像c一样用break跳出
+case $1 in 
+#$1是一个特殊变量执行脚本时自动取值为第一个命令行参数
+    'start' )
+        echo "start...done"
+        ;;
+    'stop' )
+        echo "stop...done"
+        ;;
+    * )
+        echo "default"
+        ;;
+esac
 
 
 
