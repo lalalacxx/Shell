@@ -95,12 +95,61 @@
 # if后面的子命令通常是测试命令，但也可以是其他命令
 # 所以说，只要某个命令的退出码为0或者为1来表名执行结果
 # 该命令都可以放在if后
+# 练习：检测文件中是否含有222这样的关键字
+# 思路：用if进行条件判断，直接判断grep命令的执行结果
+# -E:使用扩展正则匹配
+# -q：使用安静模式匹配
+# printf "Enter filename: "
+# read filename
+# if grep -Eq '222' "$filename";then
+#     echo "yes"
+# else
+#     echo "no"
+# fi
+# shell中没有{}。所以用fi表示if语句块的结束
 
+# 空代码块
+# 在shell中，如果我们在一个应该出现语句的地方
+# 却不需要任何语句执行任何事情，如果空下不写语句
+# 则shell就会报错
+# read myint
+# if [ $myint -eq 100 ];then
+# else
+#     echo "then后面是个空余句"
+# fi
+# 解决办法：用：。：是一个特殊的命令，称为空命令
+# 该命令不做任何事情，但退出码总是为真
+# 此外也可以执行/bin/true或/bin/false
+# 得到真或者假的退出码
+# printf "Enter data: "
+# read data
+# if [ $data -eq 100 ];then
+#     false   # 这里也可以用true/false命令代替
+# else
+#     echo "data is ne than 100"
+# fi
 
-
-
-
-
+# ||和&&
+# ||
+# printf "Enter data1: "
+# read data1
+# [ $data1 -eq 100 ] && echo "yes"
+# [ $data1 -eq 100 ] && {
+#     echo "yes"
+# }
+# &&
+# printf "Enter data2: "
+# read data2
+# [ $data2 -eq 100 ] && echo "YES1"
+# [ $data2 -eq 100 ] || {
+#     echo "YES2"
+# }
+# &&相当于if……then.而||相当于if not …… then.
+# && 和 || 用于连接两个命令，
+# 而上面讲的-a(逻辑与)和-o(逻辑或)仅用于
+# 在测试表达式中连接两个测试条件
+# shell这里的{}中包含的语句会在当前shell进程中执行
+# 而()中包含的语句会创建新的shell进程执行
 
 
 
