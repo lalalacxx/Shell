@@ -293,16 +293,102 @@
 # done
 # echo $string=$sum
 
+# 位置参数和特殊变量
+# $0:相当于C语言main函数中的argv[0]还有$1,$2...
+# 这些称为位置参数，相当于C语言中的argv[1],argv[2]...
+# $#:相当于C语言中main函数中的argc-1
+# $@:表示参数列表$1,$2...,可以用在for循环中的in后面
+# $?:上一条命令的退出码
+# $$：当前shell的进程号
+# echo "\$0 -> $0"
+# echo "\$1 -> $1"
+# echo "\$2 -> $2"
+# echo "\$3 -> $3"
+# echo "\$# -> $#"
+# echo "\$@ -> $@"
+# echo "\$? -> $?"
+# shift位置参数可以用shift命令左移
+# 比如shift 3表示原来的$4现在变成$1
+# 原来的$5变成$2等，原来的$1,$2,$3丢弃，$0不移动
+# 不带参数的shift命令相当于shift 1
+# shift 2
+# echo "\$0 -> $0"
+# echo "\$1 -> $1"
+# echo "\$2 -> $2"
+# echo "\$3 -> $3"
+# echo "\$# -> $#"
+# echo "\$@ -> $@"
+# echo "\$? -> $?"
+# 如何遍历命令行参数
+# 方法1
+# for i in $@
+# do
+#     echo $i
+# done
+# 方法2
+# while [ $# -ne 0 ]
+# do
+#     echo $1
+#     shift 1
+# done
 
+# 函数，函数定义中没有返回值也没有参数列表
+# function myfun()
+# {
+#     echo "hello world"
+# }
+# myfun   #调用函数
+# shell中的函数必须先定义才能调用
+# 函数传参，传参时将shell函数当成迷你脚本
+# shell函数没有参数列表并不表示不能传参数
+# 事实上函数就像是迷你脚本，调用函数时可以传任一个参数
+# 在函数内同样是用$1,$2等变量来提取参数
+# function myfun()
+# {
+#     echo $0
+#     echo $1
+#     echo $2
+#     echo $#
+#     echo $@
+#     echo "hello world"
+# }
+# myfun arg1 arg2
+# $0并不会作为函数参数进行传参任务
+# 函数中的位置参数相当于函数的局部变量
+# 改变这些变量并不会影响函数外面的$1,$2等变量
 
-
-
-
-
-
-
-
-
+# 函数返回值
+# 函数调用或者返回时，将shell函数当成命令
+# 只要是命令，那么函数调用成功与否，可以通过$?判定
+# 一般函数中可以用return命令返回，如果return后面
+# 跟一个数字则表示函数的退出码
+# function myfun()
+# {
+#     echo "exec some code"
+#     return 123
+# }
+# myfun
+# echo $?
+# 如何判断函数执行是否正确？
+# function myfun()
+# {
+#     echo "exec some code"
+#     return 123
+# }
+# myfun
+# if [ $? -eq 123 ];then
+#     echo "exec success"
+# else
+#     echo "exec false"
+# fi
+# if条件认为0为真，非0为假
+# if条件判断是根据命令的退出码判断的
+function myfun()
+{
+    echo "hello world"
+    return 0
+}
+if 
 
 
 
