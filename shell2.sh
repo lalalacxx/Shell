@@ -157,18 +157,161 @@
 # 每个匹配分支可以有若干条命令，末尾必须以;;（两个分号）结束
 # 执行时找到第一个匹配的分支并执行相应的命令
 # 然后直接跳到esac之后，不用像c一样用break跳出
-case $1 in 
-#$1是一个特殊变量执行脚本时自动取值为第一个命令行参数
-    'start' )
-        echo "start...done"
-        ;;
-    'stop' )
-        echo "stop...done"
-        ;;
-    * )
-        echo "default"
-        ;;
-esac
+# case $1 in 
+# $1是一个特殊变量执行脚本时自动取值为第一个命令行参数
+#     'start' )
+#         echo "start...done"
+#         ;;
+#     'stop' )
+#         echo "stop...done"
+#         ;;
+#     * )
+#         echo "default"
+#         ;;
+# esac
+# 假如有两种情况需要走同一段逻辑如何处理
+# case $1 in
+#     'start' | -s )
+#         echo "start...done"
+#         ;;
+#     'stop' | -p )
+#         echo "stop...done"
+#         ;;
+#     * )
+#         echo "default"
+#         ;;
+# esac
+# 支持通配符的情况
+# case $1 in
+#     [sS]tart | -s )
+#         echo "start...done"
+#         ;;
+#     [sS]top | -p )
+#         echo "stop...done"
+#         ;;
+#     * )
+#         echo "default"
+#         ;;
+# esac
+
+# for循环语句
+# 方式1
+# 在(())结构中所有的运算和C是一样的
+# for ((i = 0;i <= 5;i++ ))
+# do
+#     echo "hello $i"
+# done
+# 方式2
+# for i in {0..5}
+# do
+#     echo "hello $i"
+# done
+# for in这样的循环的独到之处就是遍历字符等
+# for i in {a..e}
+# do
+#     echo "hello $i"
+# done
+# 也可以组合
+# for i in {a..c}{1..3}
+# do
+#     echo "hello $i"
+# done
+# 或者这样组合
+# for i in {a..c} {1..3}
+# do
+#     echo "hello $i"
+# done
+
+# while循环
+# i=0
+# while [ $i -le 5 ]
+# do
+#     echo "hello $i"
+#     (( i++ )) #该句也可以使用let i++，二者等价
+# done
+# until循环，shell特有
+# i=0
+# until [ $i -ge 5 ]
+# do
+#     echo "hello $i"
+#     let i++
+# done
+# 总结一下：
+# while循环是当条件为真时执行后面紧跟的do后面的语句
+# until循环是条件为假时才执行
+
+# 死循环
+# 方式1
+# for (( ; ; ))
+# do
+#     echo "hello"
+# done
+# 方式2
+# while :   # 或者while true
+# do
+#     echo "hello"
+# done
+# 方式3
+# until false
+# do
+#     echo "hello"
+# done
+
+# 命令行循环
+# 命令行循环与删哪个面我们写过的循环并无不同
+# 只是在命令行上写时没一条语句的后面都需要加上分号
+
+# 练习1：求1~100的和
+# 方式1：for循环
+# sum=0
+# for i in {1..100}
+# do
+#     ((sum=sum+$i))
+# done
+# echo "sum=$sum"
+# 方式2：while循环
+# i=1
+# sum=0
+# while [ $i -le 100 ]
+# do
+#     let sum+=i
+#     let i++
+# done
+# echo "sum="$sum
+# 练习2：求1~100的和并打印执行过程
+# sum=0
+# string=''
+# for i in {1..100}
+# do
+#     let sum+=i
+#     if [ -z "$string" ];then  # 判断是否为一个空字符串
+#         string=$i
+#     else
+#         string=$string'+'$i # 字符串拼接
+#     fi
+#     let i++
+# done
+# echo $string=$sum
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
