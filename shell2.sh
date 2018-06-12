@@ -370,6 +370,7 @@
 # myfun
 # echo $?
 # 如何判断函数执行是否正确？
+# 方式1
 # function myfun()
 # {
 #     echo "exec some code"
@@ -383,19 +384,128 @@
 # fi
 # if条件认为0为真，非0为假
 # if条件判断是根据命令的退出码判断的
-function myfun()
-{
-    echo "hello world"
-    return 0
-}
-if 
+# 方式2
+# function myfun()
+# {
+#     echo "hello world"
+#     return 0
+# }
+# if myfun;then
+#     echo "exec success"
+# else
+#     echo "exec false"
+# fi
+# 方式3
+# echo方式，不关心函数的退出码而关心他的数据
+# function myfun()
+# {
+#     echo "success"
+# }
+# ret=$(myfun)
+# if [ "X$ret" == "Xsuccess" ];then
+#     echo "exec success"
+# fi
 
+# shell脚本的调试方法：通过调试选项进行
+# -n:读一遍脚本中的命令但不执行
+# -v:一边执行脚本一边将执行过的脚本命令打印到标准错误输出
+# -x:提供跟踪执行信息，将执行的每一条命令和结果依次打印出来
+# 使用这些选项的三种方法
+# 方法1：命令行使用
+# echo "haha1"
+# echo "haha2"
+# echo "haha3"
+# myint=90 
+# if [$myint -lt 100];then  # 错误语句
+#     echo "yes"
+# fi
+# 方法2：在脚本开头提供参数 #! /bin/sh -x
+# ! /bin/sh -x
+# echo "haha1"
+# echo "haha2"
+# echo "haha3"
+# myint=90 
+# if [$myint -lt 100];then  # 错误语句
+#     echo "yes"
+# fi
+# 方法3：在脚本中用set命令启用或禁用参数
+# set -x和set +x 分别表示开启和禁用-x参数，
+# 这样就可以只对脚本中的某一段进行跟踪调试
+# echo "haha1"
+# echo "haha2"
+# set +x
+# echo "haha3"
+# echo "haha4"
+# echo "haha5"
+# set -x
+# echo "haha6"
+# echo "haha7"
 
+# 数组：数组中可存放多个值(只支持一维)
+# 初始化时不需要定义数组大小，并且没有限定数组的大小
+# 下标从0开始，下标可以是整数或算术表达式，其值大于等于0
+# shell数组用括号表示，元素用空格分割开，可以不使用连续的下标
+# 并且下标的范围没有限制
+# 语法格式：arr_name=(value1 value2...valuen)
+# 或者：
+# arr_name[0]=""
+# arr_name[1]=""
+# arr_name[10]=""
+# ...
+# 读取数组指定元素值的一般格式为：${arr_name[index]}
+# arr=(1 a 3.14 'A' "string")
+# echo "0:${arr[0]}"
+# echo "1:${arr[1]}"
+# echo "2:${arr[2]}"
+# echo "3:${arr[3]}"
+# echo "4:${arr[4]}"
+# 获取数组中的所有元素
+# arr=(1 a 3.14 'A' "string")
+# echo ${arr[@]}
+# echo ${arr[*]}
+# 获取数组的长度
+# arr=(1 a 3.14 'A' "string")
+# echo ${#arr[@]}
+# echo ${#arr[*]}
+# 遍历数组
+# 方式1：
+# arr=(1 a 3.14 'A' "string")
+# for (( i=0;i <${#arr[@]};i++ ))
+# do
+#     echo "$i -> ${arr[i]}"
+# done
+# 方式2：
+# arr=(1 a 3.14 'A' "string")
+# for i in ${arr[@]}
+# do
+#     echo $i
+# done
+# 我们在前面也说过shell中的数组下标可以是不连续的
+# 假如我们在数组中添加一个元素arr[7]，没有下标为5,6的元素
+# 这个时候我们使用方式1是是不会访问到下标为7的元素的
+# 解决办法：推荐使用方式2
 
-
-
-
-
+# shell与文件：大多数UNIX系统命令从我们的终端接受输入
+# 并将所产生的输出发送回我们的终端。一个命令通常从一个
+# 叫标准输入的地方读取输入，默认情况下，这恰好是我们的终端
+# 同样，一个命令通常将其输出写入到标准输出，默认情况下
+# 这也会是我们的终端
+# shell输出重定向：
+# echo "hello world" > file
+# for i in {1..3}
+# do
+#     echo "haha $i"
+# done > file
+# shell追加重定向
+# echo "hello world" > file
+# for i in {1..3}
+# do
+#     echo "haha $i"
+# done >> file
+# shell输入重定向
+# 
+read line < file
+echo $line
 
 
 
