@@ -490,6 +490,7 @@
 # 叫标准输入的地方读取输入，默认情况下，这恰好是我们的终端
 # 同样，一个命令通常将其输出写入到标准输出，默认情况下
 # 这也会是我们的终端
+
 # shell输出重定向：
 # echo "hello world" > file
 # for i in {1..3}
@@ -502,21 +503,145 @@
 # do
 #     echo "haha $i"
 # done >> file
+
 # shell输入重定向
-# 
-read line < file
-echo $line
+# 只能读文件中的一行
+# read line < file
+# echo $line
+# 可按行读取整个文件的内容
+# while read line
+# do
+#     echo $line
+# done < file
+# 给每行添加一个字符串，并且备份到另外一个文件中
+# while read line
+# do
+#     echo 'YES '$line
+# done < file >> file2
 
+# 默认情况下。command > file将stdout重定向到file
+# command < file将stdin重定向到file
+# stderr重定向到file：
+# 2表示标准错误文件（stderr）
+# find aaaaa 2> file  # 重定向
+# find bbbbb 2>> file  # 追加重定向
+# 注意这里的 2> 是一个整体，2和>之间不能有空格
+# 如果要将stdout和stderr合并后重定向到file，可以这样写：
+# command >> file 2>&1
+# find / -name shell2.sh > out 2>&1
 
+# Here Document:是一种特殊的重定向方式
+# 用来将输入重定向到一个交互式shell脚本或程序，基本形式：
+# command << delimiter
+#         document
+# delimiter
+# 作用：将两个delimiter之间的内容(document)作为输入传递给command
+# 结尾的delimiter一定要顶格写，前后不能有任何字符，包括空格和tab
+# 开始的delimiter前后的空格会被忽略掉
+# 统计EOF之间有多少行string
+# wc -l <<EOF
+# aaaa
+# bbbb
+# cccc
+# EOF
+# 使用Here Document生成Makefile文件
+# cat <<EOF > Makefile
+# test:test.c
+#         gcc -o test test.c
+# .PHONY:clean
+# clean:
+#         rm -f test
+# EOF
 
+# /dev/null:如果希望执行某个命令，但又不希望
+# 在屏幕上显示输出结果，可将结果重定向到/dev/null
+# 该文件是一个特殊的文件，写入到他的内容都会被丢弃
+# 不会从该文件中读到任何内容，但是有用的是会有禁止输出的效果
+# 如果希望屏蔽stdout和stderr可以这样写：
+# find / -name shell2.sh > out 2>&1 > /dev/null
 
+# shell与信号，常见处理方式如下：
+# trap 'commands' signal-list:当脚本收到signal-list
+# 清单列出的信号时，trap命令会执行引号中的命令
+# trap 'echo "hello"; ls' 3
+# while :
+# do
+#     :
+# done
+# trap signal-list:trap不指定任何命令，接受信号的默认操作
+# 默认操作是结束进程的运行
+# trap '' signal-list:trap命令指定一个空命令串，允许忽视信号
 
+# shell文件包含：使用 . 和 source
+# . api.sh
+# source api.sh
+# read d1 d2
+# res=$(intAdd $d1 $d2)
+# echo $res
+# 新建一个文件写以下函数
+# function intAdd()
+# {
+#     let data=$1+$2
+#     echo $data
+# }
 
+# shell运算符
+# echo
+# 显示字符串
+# echo "hello"  # 可省略双引号
+# echo hello
+# 显示换行
+# echo -e "hello! \nworld"
+# 显示不换行
+# echo "hello!\c"
+# echo "world"
+# printf:使用printf的脚本比使用echo的移植性好
+# printf使用引用文本或空格分割的参数，外面可以在printf
+# 中使用格式化字符串，还可以定制字符串的宽度，左右对齐方式等
+# 默认printf不会像echo自动添加换行符，可手动添加\n
+# mystring='string'
+# myint=100
+# myfloat=3.14
+# printf "%s:%d:%f\n" $mystring $myint $myfloat
 
+# 产生一个随机数
+# echo $RANDOM
 
-
-
-
+# 练习1：进度条
+# i=0
+# bar=''
+# lable=("|" "/" "-" "\\")
+# while [ $i -le 100 ]
+# do
+#     printf "[%d%%][%c]%s\r" "$i" "${lable[i%4]}" "$bar"
+#     let i++
+#     bar=${bar}'#'  # 字符串拼接
+#     sleep 0.1   # shell 中按秒计算
+# done
+# printf "\n"
+# 练习2：传入至少3个参数，计算最大最小和平均值
+# 需判断传入的参数个数是否足够，否则输出警告
+# 平均值保留两位有效小数
+# if [ $# -lt 3 ];then
+#     echo "参数太少"
+#     exit 1
+# fi
+# max=$1
+# min=$1
+# sum=0
+# for i in $@
+# do
+#     [ $i -lt $min ] && min=$i
+#     [ $i -gt $max ] && max=$i
+#     let sum=$sum+$i
+# done
+# echo "min="$min
+# echo "max="$max
+# # 使用命令代换（这里使用反引号），bc是计算器
+# # ibase=10：按十进制计算，scale=2:保留两位小数
+# avg=`echo "ibase=10;scale=2;$sum/$#" | bc`
+# echo $avg
+# 练习3：有一列数字如下
 
 
 
