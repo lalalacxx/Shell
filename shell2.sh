@@ -645,14 +645,14 @@
 # 第一次：1 第二次：2 第三次：3 第四次：5
 # 第五次：8 第六次：13...
 # 求第100次的数
-# arr[0]=1
-# arr[1]=2
-# for (( i=2;i<=99;i++ ))
-# do
-#     #((arr[$i] = ${arr[$i-1]+arr[$i-2]}))
-#     arr[$i]=`expr ${arr[$i-1] + arr[$i-2]}`
-# done
-# echo ${arr[99]}
+arr[0]=1
+arr[1]=2
+for (( i=2;i<=99;i++ ))
+do
+    #(( arr[$i]=${arr[$i-1]}+${arr[$i-2]} ))
+    arr[$i]=`expr ${arr[$i-1]} + ${arr[$i-2]}`
+done
+echo ${arr[99]}
 # 练习4：文件内容如下：123abc456 456def123 
 # 要求输出：456ABC123 123DEF456
 # input="123abc456"
@@ -661,10 +661,3 @@
 # sub3=${input:6:3}
 # tmp=$sub3$sub2$sub1
 # echo $tmp | tr 'a-z' 'A-Z'
-
-
-
-
-
-
-
