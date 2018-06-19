@@ -124,15 +124,60 @@
 # echo "a@b@c@d" | xargs -d@ -n2
 # 将格式化后的字符串作为命令行参数传递给其他命令，
 # 组装完成批量任务
-find /etc -name "*.cat" 2>/dev/null | xargs ls
-find /etc -name "*.cat" 2>/dev/null | xargs -p ls
+# find /etc -name "*.cat" 2>/dev/null | xargs ls
+# find /etc -name "*.cat" 2>/dev/null | xargs -p ls
+# xargs默认是将分割处理后的结果整体传递到命令的尾部
+# 但是有些时候需要把参数传递到中间的某个位置，
+# 就需要使用替换符号进行占位
+# -i:默认使用{}作为替换符号
+# -I:可以指定替换符号
 
+# 创建根目录下和目录同名的.log文件
+# ls / | xargs -I {} touch {}.log
+# ls / | xargs -I {} rm {}.log
 
+# find xargs rm 混合使用
+# count=0
+# while [ $count -le 100 ]
+# do
+#     touch test$count
+#     let count++
+# done
+# find . -name "test*" -print0 | xargs -0 rm
+# find指令的-print0：打印结果以\0做结尾
+# xargs的-0：使用'\0'做分割符，使用这两个参数
+# 是为了处理文件名中带有空格的情况
 
+# grep工具
+# 常用选项：
+# -E：扩展模式的正则表达式
+# -v:只显示不匹配的行
+# -r/R:递归查找
+# -q:安静模式，查找时不输出任何结果
+# -i：忽略大小写
+# -n:输出匹配行的行号
+# -o:值输出文件中匹配到的部分
+# 具体使用见正则表达式学习笔记
 
+# sed工具
+# 处理时，把当前处理的行存储在临时缓冲区中，称为
+# 模式空间，接着用sed命令处理缓冲区中的内容，处
+# 理完成后，把缓冲区的内容送往屏幕，接着处理下一行
+# 这样不断重复，直到文件末尾。但原文件的内容并不改变
+# sed默认按照Basic规范基本匹配
 
+# 常见基本使用：
+# 打印：
+# sed '/^a\+$/p' file
+# p命令：打印。但是默认没有匹配到的行也会打印出来
+# sed是把待处理文件的内容连同处理结果一起输出到标
+# 准输出的，因此p命令表示除了把文件内容打印出来
+# 之外还额外打印一遍匹配到的行，要想值输出匹配结果
+# 可使用-n选项，该用法相当于grep命令
 
-
+# 删除：
+# 删掉c程序代码中的printf语句
+sed '/^.*printf.*;$/d' test.c
 
 
 
