@@ -287,42 +287,150 @@
 # $2大于50时将该条记录的$2替换为yes然后输出整条记录
 # $2小于等于50时将该条记录的$2替换为no然后输出整条记录
 # awk '$2>50{print $1,"yes"} $2 <=50{print $1,"no"}' file
+# 也可以这样写
+# awk '{
+# if($2 > 50)
+#     print $0;
+# else
+#     print "value too small"
+# }' data.txt
+
+# awk支持的命令除了print还有printf最常用
+# awk '$2>50{printf("$s->$s\n",$1,"yes");} $2<=50{printf("$s->$s\n",$1,"no");}' data.txt
+# printf在使用上几乎和C语言中的printf语句使用一样
+
+# awk定制分隔符，默认按照空格分割，如果
+# 想指定分割符则使用-F选项
+# echo "hello world" | awk '{print $1}'
+# echo "hello@world" | awk '{print $1}'
+# echo "hello@world" | awk -F'@' '{print $1}'
+# -F选项还支持多种符号进行定制分隔符
+# echo "hello@world&haha#heihei" | awk -F'[@&#]' '{print $1}'
+# echo "hello@world&haha#heihei" | awk -F'[@&#]' '{print $2}'
+# echo "hello@world&haha#heihei" | awk -F'[@&#]' '{print $3}'
 
 
+# BEGIN   END
+# BEGIN和END，可以用来做文本处理之前的工作，之后的首位工具
+# 基本格式：BEGIN{} /REG/{} END{}或者BEGIN condition{} END{}
+# 任何在BEGIN之后列出的操作（在{}内的）将在awk开始扫描之前执行
+# 而END之后列出的操作将在扫描完全的输入之后执行
+# 例1：统计文本中成绩及格的人数
+# awk -F':' 'BEGIN{
+#     count=0;   # 如果初始化为0，则可不写BEGIN语句
+# }
+# {
+#     if($2>60)
+#     {
+#         ++count;
+#     }
+# }
+# END{
+#     print "count="count;
+# }' data.txt
+# 例2：统计文本中单词出现的频率
+# awk '
+# {
+#     for(i=1;i<=NF;++i)  # NF:当前行的列数（内置变量）
+#         {
+#             ++arr[$i];
+#         }
+# }
+# END{
+# for(i in arr)
+#     {
+#         print i"\t"arr[i];
+#     }
+# }' data.txt
+# 例3：统计文本中空行的行数
+# awk '
+# BEGIN{
+# count=0;
+# }
+# /^ *$/{
+#     count++;
+# }
+# END{
+# printf("%d\n",count);
+# }' data.txt
+
+# awk不仅仅是一个工具，也是一门语言，因此我们
+# 除了使用基本命令行的使用方式，也可以使用awk脚本的方式
+# 例：通过awk脚本，统计产品的档次，85分以上优，75-85为良
+# 60-75为中，60分一下为差
+# 见grade.awk
 
 
+# 内置变量：
+# ARGC:命令行参数个数
+# ENVIRON:支持队列中系统环境变量的使用
+# FIENAME：awk浏览的文件名
+# FNR:浏览文件的记录数
+# FS:设置输入域分隔符，等价于命令行-F选项
+# NF:浏览记录的域的个数
+# NR:已读的记录数
+# OFS:输出域分隔符
+# ORS:输出记录分隔符
+# RS:控制记录分隔符
 
 
+# find工具
+# Linux下find命令在目录结果中搜索文件，并执行指定的操作
+# 选项学习：
+
+# find pathname -options [-print -exec -ok ...]
+# 用于在文件树中查找文件，并作出相应的处理（可能访问磁盘）
+# pathname:find命令查找的目录路径
+# -print:find命令将匹配的文件输出到标准输出
+# -exec:find命令堆匹配的文件执行该参数所给出的shell命令
+# 相应的命令的形式为：
+# 'command'{} ;,注意{}和;之间的空格
+# -ok:和-exec的作用相同，只不过以一种更为安全的模式来
+# 执行该参数所给出的shell命令，在执行每一个命令之前，
+# 都会给出提示让用户确定是否执行
+
+# 常见选项：
+# -name:按照文件名查找文件
+# -perm:按照文件权限查找文件
+# -prune:使用这一选项可以使find命令不再当前指定的目录中查找
+# 如果同时使用-depth选项，那么-prune将被find忽略
+# -depth:在查找文件时，首先查找当前目录中的文件，然后再在
+# 其子目录中查找
+# -user:按照文件属主来查找文件
+# -group:按照文件所属的组查找文件
+# -nogroup:查找无有效所属组的文件
+# -nouser:查找无有效所属主的文件
+# -size n:[c] 查找文件长度为n块的文件，
+# 带有c时表示文件长度以字节计
+# -type:查找某一类型的文件，如：
+# -b:块设备文件
+# -d:目录
+# -c:字符设备文件
+# -p:管道文件
+# -l:符号链接文件
+# -f:普通文件
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 例1：查找系统中所有的test.c文件
+# find /-name test.c
+# 例2:查找系统指定目录下中所有的权限为633的文件
+# find /home/cxx -perm 633
+# 例3::查找系统中所有的拥有者是cxx的文件
+# find / -user cxx
+# 例4:查找系统中无所属主的文件
+# find / -nouser | more
+# 例5:查找更改时间比文件file.old新但比文件file.new旧的文件
+# find . -newer file.old ! -newer file.new
+# 例6:查找系统中的所有管道文件
+# find / -type p
+# 例7:查找所有文件大小是2048个字节的大小
+# find / -size 2048c
+# 例8:查找系统中所有，大于2048小于4096字节的文件
+# find / -size +2048c -size -4096c | more
+# 例9:查找系统中所有大于2048小于4096字节的文件，
+# 并使用print输出
+# find / -size +2048c -size -4096c -print
+# 例10：查找系统中大于2048小于4096字节的文件，
+# 并使用对符合条件的文件进行ls -l输出
+# find / -size +2048c -size -4096c -exec ls -l {} \; | more
 
