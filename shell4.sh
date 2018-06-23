@@ -259,16 +259,34 @@
 # 行分隔符和列分隔符都可以自定义，比如/etc/passwd
 # 文件的每一行有若干个字段，字段之间以：分割，就可
 # 以重新定义awk的列分隔符为：并以列为单位处理该文件
-# 
+# 和sed一样，awk处理的文件既可以由标准输入重定向得到
+# 也可以当命令行参数传入，编辑命令可以直接当命令行
+# 参数传入，也可以用-f参数指定一个脚本文件。
+# 编辑命令的基本格式为：
+# /pattern/{actions}
+# condition{actions}
+# 和sed类似，pattern是正则表达式，actions是一系列操作
+# awk程序一行一行独处待处理文件，如果某一行与pattern匹配
+# 或者满足condition条件，则执行相应的actions，若一条awk
+# 命令只有actions部分，则actions部分作用于待处理文件的每一行
 
+# print命令
+# awk '/^producta.*$/{print $1}' file
+# 使用print命令输出符合正则表达式的结果行，这里的$0代表整条
+# 记录行。
+# awk '/^producta.*$/{print $1}' file
+# awk '/^producta.*$/{print $2}' file
+# 这里的$1 $2表示指定的域（列）
 
+# 输出多个域时，print使用，（逗号）作为分隔符
+# awk '/^producta.*$/{print $2,$1,$0}' file
 
-
-
-
-
-
-
+# 根据条件进行输出
+# $2大于50的时候才输出该行记录
+# awk '$2 > 50{print $0}' file
+# $2大于50时将该条记录的$2替换为yes然后输出整条记录
+# $2小于等于50时将该条记录的$2替换为no然后输出整条记录
+# awk '$2>50{print $1,"yes"} $2 <=50{print $1,"no"}' file
 
 
 
